@@ -92,7 +92,7 @@ app.post("/signup", async (req, res) => {
 		return res.send("User already exists");
 	}
 
-	const newUser = ({name, email, pass:password});
+	const newUser = new User({name, email, pass:password});
 	await newUser.save();
 
 	res.redirect("/signin");
@@ -110,6 +110,21 @@ app.post("/signin", async (req, res) => {
 	res.redirect("/");
 });
 
-// app.get("/add-transaction", (req, res) => {
+app.get("/logout", (req, res) => {
+	req.session.destroy(() => {
+		res.redirect("/signin");
+	});
+});
 
-// });
+app.get("/addTrans", (req, res) => {
+	res.render("addTrans.ejs");
+});
+
+app.post("/addTrans", async (req, res) => {
+	const {payee, amount, date} = req.body;
+
+	const newData = new Data({userID: req.session.userID, payee, amount, date});
+	await newData.save();
+
+	res.redirect("/");
+});

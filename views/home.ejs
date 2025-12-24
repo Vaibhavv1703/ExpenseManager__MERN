@@ -7,7 +7,7 @@
 	</head>
 
 	<body>
-		<h2>Welcome <%= uID %></h2>
+		<h2>Welcome <%= uID %>, <%= userData["name"] %></h2>
 		<table border="1">
 			<tr>
 				<th>Paid To</th>
@@ -23,8 +23,11 @@
 			<% } %>
 		</table>
 		<br />
-		<form action="/add-transaction" method="GET">
+		<form action="/addTrans" method="GET">
 			<button>Add Transaction</button>
+		</form>
+		<form action="/logout" method="GET">
+			<button>Logout</button>
 		</form>
 	</body>
 </html>
