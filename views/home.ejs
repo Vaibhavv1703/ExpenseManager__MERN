@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Home</title>
+	</head>
+
+	<body>
+		<h2>Welcome <%= uID %></h2>
+		<table border="1">
+			<tr>
+				<th>Paid To</th>
+				<th>Amount</th>
+				<th>Date</th>
+			</tr>
+			<% for (data of userData) { %>
+			<tr>
+				<td><%= data["payee"] %></td>
+				<td><%= data["amount"] %></td>
+				<td><%= data["date"] %></td>
+			</tr>
+			<% } %>
+		</table>
+		<br />
+		<form action="/add-transaction" method="GET">
+			<button>Add Transaction</button>
+		</form>
+	</body>
+</html>
