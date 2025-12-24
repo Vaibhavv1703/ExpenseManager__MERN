@@ -3,12 +3,27 @@ const mongoose = require("mongoose");
 const express = require("express");
 const path = require("path");
 const methodOverride = require("method-override");
+const session = require("express-session");
+const MongoStore = require("connect-mongo").default;
 
 const app = express();
 
 app.use(methodOverride("_method"));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
+app.use(
+	session({
+		secret: process.env.SESSION_SECRET || "supersecret",
+		resave: false,
+		saveUninitialized: false,
+		store: MongoStore.create({
+			mongoUrl: process.env.MONGODB_URI,
+		}),
+		cookie: {
+			maxAge: 1000 * 60 * 60 * 24, // 1 day
+		},
+	})
+);
 
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
@@ -33,91 +48,66 @@ main().then(() => {
 });
 
 const userSchema = new mongoose.Schema({
-	name: {
-		type: String,
-		required: true,
-	},
-	email: {
-		type: String,
-		required: true,
-	},
-	pass: {
-		type: String,
-		required: true,
-	},
+	name: { type: String, required: true },
+	email: { type: String, required: true },
+	pass: { type: String, required: true }
 });
 const User = mongoose.model("User", userSchema);
 
 const dataSchema = new mongoose.Schema({
 	userID: {
-		type: String,
+		type: mongoose.Schema.Types.ObjectId,
+		ref: "User",
 		required: true,
 	},
-	payee: {
-		type: String,
-	},
-	amount: {
-		type: Number,
-		required: true,
-	},
-	date: {
-		type: String,
-		required: true,
-	},
+	payee: String,
+	amount: { type: Number, required: true },
+	date: { type: String, required: true },
 });
 const Data = mongoose.model("Data", dataSchema);
 
-// var uID = "694a974fb7761ab3a8ed68d5";
-var uID;
 
-app.get("/", (req, res) => {
-	if (uID != null) {
-		Data.find({ userID: `${uID}` }).then((userData) => {
-			res.render("home.ejs", { userData, uID});
-		});
-	} else {
-		res.redirect("/signin");
+app.get("/", async (req, res) => {
+	if (!req.session.userID) {
+		return res.redirect("/signin");
 	}
+	const userData = await Data.find({userID: req.session.userID});
+
+	res.render("home.ejs", {userData, uID: req.session.userID,});
 });
 
 app.get("/signin", (req, res) => {
-	uID = null;
 	res.render("signin.ejs");
 });
 
 app.get("/signup", (req, res) => {
-	uID = null;
 	res.render("signup.ejs");
 });
 
-app.post("/signup", (req, res) => {
-	let { name: formName, email: formEmail, password: formPass } = req.body;
-	User.find({ email: formEmail }).then((data) => {
-		if (data.length != 0) {
-			res.send("User already exists");
-		} else {
-			const newUser = new User({
-				name: formName,
-				email: formEmail,
-				pass: formPass,
-			});
-			newUser.save();
-			res.redirect("/signin");
-		}
-	});
+app.post("/signup", async (req, res) => {
+	const { name, email, password } = req.body;
+
+	const existingUser = await User.findOne({ email });
+	if (existingUser) {
+		return res.send("User already exists");
+	}
+
+	const newUser = ({name, email, pass:password});
+	await newUser.save();
+
+	res.redirect("/signin");
 });
 
-app.post("/signin", (req, res) => {
-	let { email: formEmail, password: formPassword } = req.body;
-	User.find({ email: formEmail, pass: formPassword }).then((data) => {
-		if (data.length == 0) {
-			uID = null;
-			res.send("No user found");
-		} else {
-			uID = data[0]["id"];
-			res.redirect("/");
-		}
-	});
+app.post("/signin", async (req, res) => {
+	const { email, password } = req.body;
+
+	const user = await User.findOne({ email, pass: password });
+	if (!user) {
+		return res.send("No user found");
+	}
+
+	req.session.userID = user._id;
+	res.redirect("/");
 });
 
 // app.get("/add-transaction", (req, res) => {
