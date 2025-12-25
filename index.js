@@ -20,7 +20,7 @@ app.use(
 			mongoUrl: process.env.MONGODB_URI,
 		}),
 		cookie: {
-			maxAge: 1000 * 60 * 5, // 5 min  ms * sec * min
+			maxAge: 1000 * 60 * 15, // 5 min  ms * sec * min
 		},
 	})
 );
@@ -131,6 +131,22 @@ app.post("/addTrans", async (req, res) => {
 app.get("/deleteTrans/:id", async (req, res) => {
 	const {id} = req.params;
 	await Data.findByIdAndDelete(id);
+	res.redirect("/");
+});
+
+app.get("/editTrans/:id", async (req, res) => {
+	const {id} = req.params;
+	const data = await Data.findById(id);
+	res.render("editTrans.ejs", {data});
+});
+
+app.post("/editTrans/:id", async (req, res) => {
+	const {id} = req.params;
+	const {payee, amount, date} = req.body;
+	await Data.findOneAndUpdate(
+		{ _id: id, userID: req.session.userID },
+		{ payee, amount, date }
+	);
 
 	res.redirect("/");
 });

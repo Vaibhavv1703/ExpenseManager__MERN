@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Transaction</title>
+</head>
+<body>
+    <h1>Edit Transaction</h1>
+    <form action="/editTrans/<%= data._id %>" method="POST">
+        <label for="payee">Paid to:</label>
+        <input type="text" id="payee" name="payee" value="<%= data.payee %>"><br><br>
+
+        <label for="amount">Amount:</label>
+        <input type="number" id="amount" name="amount" value="<%= data.amount %>" required><br><br>
+
+        <label for="date">Date:</label>
+        <input type="date" id="date" name="date" value="<%= data.date %>" required><br><br>
+
+        <button type="submit">Edit Transaction</button>
+    </form>
+</body>
+</html>

@@ -19,6 +19,9 @@
 				<td><%= data["payee"] %></td>
 				<td><%= data["amount"] %></td>
 				<td><%= data["date"] %></td>
+				<td><form action="/editTrans/<%= data["_id"] %>" method="GET">
+					<button>Edit</button>
+				</form></td>
 				<td><form action="/deleteTrans/<%= data["_id"] %>" method="GET">
 					<button>Delete</button>
 				</form></td>
