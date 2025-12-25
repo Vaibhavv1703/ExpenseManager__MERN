@@ -7,7 +7,7 @@
 	</head>
 
 	<body>
-		<h2>Welcome <%= uID %>, <%= userData["name"] %></h2>
+		<h2>Welcome <%= userName %></h2>
 		<table border="1">
 			<tr>
 				<th>Paid To</th>
@@ -19,6 +19,9 @@
 				<td><%= data["payee"] %></td>
 				<td><%= data["amount"] %></td>
 				<td><%= data["date"] %></td>
+				<td><form action="/deleteTrans/<%= data["_id"] %>" method="GET">
+					<button>Delete</button>
+				</form></td>
 			</tr>
 			<% } %>
 		</table>

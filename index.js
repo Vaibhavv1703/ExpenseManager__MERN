@@ -71,9 +71,9 @@ app.get("/", async (req, res) => {
 	if (!req.session.userID) {
 		return res.redirect("/signin");
 	}
+	const user = await User.findOne({_id: req.session.userID});
 	const userData = await Data.find({userID: req.session.userID});
-
-	res.render("home.ejs", {userData, uID: req.session.userID,});
+	res.render("home.ejs", {userData, userName: user.name});
 });
 
 app.get("/signin", (req, res) => {
@@ -124,6 +124,13 @@ app.post("/addTrans", async (req, res) => {
 	const {payee, amount, date} = req.body;
 	const newData = new Data({userID: req.session.userID, payee, amount, date});
 	await newData.save();
+
+	res.redirect("/");
+});
+
+app.get("/deleteTrans/:id", async (req, res) => {
+	const {id} = req.params;
+	await Data.findByIdAndDelete(id);
 
 	res.redirect("/");
 });
