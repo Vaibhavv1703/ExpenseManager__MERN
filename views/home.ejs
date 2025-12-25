@@ -3,37 +3,246 @@
 	<head>
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<title>Home</title>
+		<title>Expense Manager - Home</title>
+		<link rel="preconnect" href="https://fonts.googleapis.com">
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+		<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+		<style>
+			* {
+				margin: 0;
+				padding: 0;
+				box-sizing: border-box;
+			}
+
+			body {
+				font-family: 'Poppins', sans-serif;
+				background: #121212;
+				min-height: 100vh;
+				padding: 30px 20px;
+				color: #f5f5f5;
+			}
+
+			.container {
+				max-width: 1000px;
+				margin: 0 auto;
+				background: rgba(255, 255, 255, 0.1);
+				border: 1px solid #b4952f;
+				border-radius: 20px;
+				padding: 40px;
+				box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3), 0 0 20px rgba(180, 149, 47, 0.2);
+			}
+
+			.header {
+				display: flex;
+				justify-content: space-between;
+				align-items: center;
+				margin-bottom: 35px;
+				border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+				padding-bottom: 20px;
+			}
+
+			h2 {
+				color: #fff;
+				font-size: 32px;
+				font-weight: 700;
+			}
+
+			.welcome-name {
+				color: #dfab00;
+				font-weight: 600;
+			}
+
+			table {
+				width: 100%;
+				border-collapse: collapse;
+				margin: 30px 0;
+			}
+
+			th {
+				background: linear-gradient(90deg, #b4952f, #dfab00, #b4952f);
+				color: #fff;
+				padding: 16px;
+				text-align: left;
+				font-weight: 600;
+				font-size: 14px;
+				border: none;
+			}
+
+			td {
+				padding: 16px;
+				border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+				color: #f5f5f5;
+				font-size: 14px;
+			}
+
+			tr:hover {
+				background-color: rgba(255, 255, 255, 0.1);
+				transition: background-color 0.2s ease;
+			}
+
+			.actions {
+				display: flex;
+				gap: 8px;
+			}
+
+			button {
+				padding: 8px 16px;
+				border: 1px solid #b4952f;
+				border-radius: 8px;
+				font-size: 13px;
+				font-weight: 600;
+				cursor: pointer;
+				transition: all 0.3s ease;
+				font-family: 'Poppins', sans-serif;
+			}
+
+			.edit-btn {
+				background: linear-gradient(90deg, #b4952f, #dfab00, #b4952f);
+				color: #121212;
+				box-shadow: 0 5px 15px rgba(180, 149, 47, 0.3);
+			}
+
+			.edit-btn:hover {
+				transform: translateY(-2px);
+				box-shadow: 0 10px 25px rgba(180, 149, 47, 0.4);
+			}
+
+			.delete-btn {
+				background: linear-gradient(90deg, #b4952f, #dfab00, #b4952f);
+				color: #121212;
+				box-shadow: 0 5px 15px rgba(180, 149, 47, 0.3);
+			}
+
+			.delete-btn:hover {
+				transform: translateY(-2px);
+				box-shadow: 0 10px 25px rgba(180, 149, 47, 0.4);
+			}
+
+			.action-buttons {
+				display: flex;
+				gap: 15px;
+				margin-top: 35px;
+				padding-top: 20px;
+				border-top: 2px solid rgba(255, 255, 255, 0.1);
+			}
+
+			.btn-primary {
+				flex: 1;
+				padding: 12px 24px;
+				background: linear-gradient(90deg, #b4952f, #dfab00, #b4952f);
+				color: #121212;
+				font-size: 14px;
+				box-shadow: 0 10px 20px rgba(180, 149, 47, 0.3);
+			}
+
+			.btn-primary:hover {
+				transform: translateY(-2px);
+				box-shadow: 0 15px 35px rgba(180, 149, 47, 0.4);
+			}
+
+			.btn-logout {
+				flex: 1;
+				padding: 12px 24px;
+				background: transparent;
+				color: #dfab00;
+				border: 1px solid #b4952f;
+				font-size: 14px;
+				box-shadow: inset 0 0 0 rgba(0,0,0,0);
+			}
+
+			.btn-logout:hover {
+				background: rgba(255,255,255,0.1);
+				transform: translateY(-2px);
+				box-shadow: 0 10px 30px rgba(180, 149, 47, 0.3);
+			}
+
+			form {
+				display: contents;
+			}
+
+			.empty-state {
+				text-align: center;
+				color: #f5f5f5;
+				padding: 40px 20px;
+				font-size: 16px;
+			}
+
+			@media (max-width: 768px) {
+				.container {
+					padding: 20px;
+				}
+
+				.header {
+					flex-direction: column;
+					align-items: flex-start;
+					gap: 10px;
+				}
+
+				h2 {
+					font-size: 24px;
+				}
+
+				table {
+					font-size: 12px;
+				}
+
+				td, th {
+					padding: 10px;
+				}
+
+				.action-buttons {
+					flex-direction: column;
+				}
+			}
+		</style>
 	</head>
 
 	<body>
-		<h2>Welcome <%= userName %></h2>
-		<table border="1">
-			<tr>
-				<th>Paid To</th>
-				<th>Amount</th>
-				<th>Date</th>
-			</tr>
-			<% for (data of userData) { %>
-			<tr>
-				<td><%= data["payee"] %></td>
-				<td><%= data["amount"] %></td>
-				<td><%= data["date"] %></td>
-				<td><form action="/editTrans/<%= data["_id"] %>" method="GET">
-					<button>Edit</button>
-				</form></td>
-				<td><form action="/deleteTrans/<%= data["_id"] %>" method="GET">
-					<button>Delete</button>
-				</form></td>
-			</tr>
+		<div class="container">
+			<div class="header">
+				<h2>Welcome <span class="welcome-name"><%= userName %></span></h2>
+			</div>
+
+			<% if (userData.length > 0) { %>
+				<table>
+					<tr>
+						<th>Paid To</th>
+						<th>Amount</th>
+						<th>Date</th>
+						<th colspan="2">Actions</th>
+					</tr>
+					<% for (data of userData) { %>
+					<tr>
+						<td><%= data["payee"] %></td>
+						<td><strong>$<%= data["amount"] %></strong></td>
+						<td><%= data["date"] %></td>
+						<td>
+							<form action="/editTrans/<%= data["_id"] %>" method="GET" style="display: inline;">
+								<button type="submit" class="edit-btn">Edit</button>
+							</form>
+						</td>
+						<td>
+							<form action="/deleteTrans/<%= data["_id"] %>" method="GET" style="display: inline;" onsubmit="return confirm('Are you sure you want to delete this transaction?');">
+								<button type="submit" class="delete-btn">Delete</button>
+							</form>
+						</td>
+					</tr>
+					<% } %>
+				</table>
+			<% } else { %>
+				<div class="empty-state">
+					<p>No transactions yet. Add one to get started!</p>
+				</div>
 			<% } %>
-		</table>
-		<br />
-		<form action="/addTrans" method="GET">
-			<button>Add Transaction</button>
-		</form>
-		<form action="/logout" method="GET">
-			<button>Logout</button>
-		</form>
+
+			<div class="action-buttons">
+				<form action="/addTrans" method="GET">
+					<button class="btn-primary">+ Add Transaction</button>
+				</form>
+				<form action="/logout" method="GET">
+					<button class="btn-logout">Logout</button>
+				</form>
+			</div>
+		</div>
 	</body>
 </html>

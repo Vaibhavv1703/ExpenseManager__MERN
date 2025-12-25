@@ -69,7 +69,7 @@ const Data = mongoose.model("Data", dataSchema);
 
 app.get("/", async (req, res) => {
 	if (!req.session.userID) {
-		return res.redirect("/signin");
+		return res.redirect("/signup");
 	}
 	const user = await User.findOne({_id: req.session.userID});
 	const userData = await Data.find({userID: req.session.userID});
