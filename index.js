@@ -20,7 +20,7 @@ app.use(
 			mongoUrl: process.env.MONGODB_URI,
 		}),
 		cookie: {
-			maxAge: 1000 * 60 * 60 * 24, // 1 day
+			maxAge: 1000 * 60 * 5, // 5 min  ms * sec * min
 		},
 	})
 );
@@ -122,7 +122,6 @@ app.get("/addTrans", (req, res) => {
 
 app.post("/addTrans", async (req, res) => {
 	const {payee, amount, date} = req.body;
-
 	const newData = new Data({userID: req.session.userID, payee, amount, date});
 	await newData.save();
 
